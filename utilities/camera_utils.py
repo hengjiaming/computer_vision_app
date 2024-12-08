@@ -13,7 +13,7 @@ def extract_camera_details(image):
             return {"error": "No EXIF data found in the image."}
 
         # Map EXIF tags
-        exif_tags = {ExifTags.TAGS.get(
+        exif_tags = {TAGS.get(
             tag, tag): value for tag, value in exif_data.items()}
 
         # Extract relevant details
