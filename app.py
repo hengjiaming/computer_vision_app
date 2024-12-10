@@ -2,12 +2,9 @@ import os
 import joblib
 import streamlit as st
 import torch
-import torch.nn as nn
 import torchvision.transforms as transforms
 from PIL import Image
-from torchvision.models import efficientnet_v2_s
 from utilities.load_model import load_depth_model, load_custom_model
-
 from utilities.camera_utils import extract_camera_details
 
 # Predefined focal lengths for devices, we will use this for users to select if they know their phone model
@@ -67,11 +64,11 @@ if uploaded_file:
     ])
     input_tensor = preprocess(image).unsqueeze(0).to(device)
 
-    # Depth Estimation Section
+    # Depth estimation section
     st.subheader("Depth Estimation")
     camera_details = extract_camera_details(unaltered_image)
     focal_length = None
-    width, height = image.size  # Default to the actual uploaded image dimensions
+    width, height = image.size  # Default to actual uploaded image dimensions
     if not st.session_state["depth_estimated"]:
         if st.button("Estimate Depth"):
 
@@ -111,14 +108,12 @@ if uploaded_file:
             pred_depth = torch.clamp(pred_depth, 0, 300)
             depth_map = pred_depth.squeeze().cpu().numpy()
 
-            # Display center depth val, need to change from milimeters to meters
+            # Center depth val, need to change from milimeters to meters
             center_x, center_y = depth_map.shape[1] // 2, depth_map.shape[0] // 2
             center_depth = depth_map[center_y, center_x] / 1000
             scaling_factor = center_depth / 0.4
             st.session_state["scaling_factor"] = scaling_factor
             st.write(f"Depth at center ({center_x}, {center_y}): {center_depth:.2f} meters. Scaling Factor (Depth of Center / 0.4): {scaling_factor:.2f}")
-
-            # Save depth estimation as completed
             st.session_state["depth_estimated"] = True
 
             # Depth map visualization
@@ -148,7 +143,6 @@ if uploaded_file:
                 scaler_name = scaler_file.replace("_scaler.save", "")
                 scaler_path = os.path.join(scaler_directory, scaler_file)
                 scalers[scaler_name] = joblib.load(scaler_path)
-            # Save scalers for inverse transformation later
 
             with torch.no_grad():
                 outputs = custom_model(input_tensor)
