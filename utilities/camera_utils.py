@@ -16,7 +16,6 @@ def extract_camera_details(image):
         exif_tags = {TAGS.get(
             tag, tag): value for tag, value in exif_data.items()}
 
-        # Extract relevant details
         details = {
             "Image Size": image.size,
             "Focal Length": exif_tags.get("FocalLength"),
@@ -26,7 +25,6 @@ def extract_camera_details(image):
             "ISO Speed": exif_tags.get("ISOSpeedRatings"),
         }
 
-        # Format focal length if it's a tuple
         if details["Focal Length"] and isinstance(details["Focal Length"], tuple):
             details["Focal Length"] = float(details["Focal Length"][0]) / float(
                 details["Focal Length"][1]
