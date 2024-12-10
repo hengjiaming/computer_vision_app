@@ -223,22 +223,54 @@ if uploaded_file:
         if st.button("Estimate Nutrition"):
             # Perform nutritional estimation
             st.write("Processing nutritional estimation... Please wait.")
+            scaler_directory = "/content/drive/MyDrive/Colab_Notebooks/nutri_estimate/nutrition_model/scalers"
+
+            custom_model = load_custom_model(pt_file_path)
+
+            # Scale target columns
+            scalers = {}
+            scaler_files = [
+                "calorie_scaler.save", "mass_scaler.save", "carb_scaler.save",
+                "protein_scaler.save", "fat_scaler.save", "total_calories_scaler.save",
+                "total_mass_scaler.save", "total_carb_scaler.save",
+                "total_protein_scaler.save", "total_fat_scaler.save"
+            ]
+
+            for scaler_file in scaler_files:
+                scaler_name = scaler_file.replace("_scaler.save", "")
+                scaler_path = os.path.join(scaler_directory, scaler_file)
+                scalers[scaler_name] = joblib.load(scaler_path)
+            # Save scalers for inverse transformation later
+
             with torch.no_grad():
-                nutritional_output = custom_model(input_tensor)
+                outputs = custom_model(input_tensor)
+
+            results = {}
+            for key in outputs:
+                # Adjust key naming to match the scalers dictionary (carbs don't match carb)
+                scaler_key = f"total_{
+                    key[:-1]}" if key == "carbs" else f"total_{key}"
+                if scaler_key in scalers:
+                    predicted_value = scalers[scaler_key].inverse_transform(
+                        outputs[key].cpu().numpy())[0][0]
+                    results[key] = max(0, predicted_value)
+                else:
+                    print(f"Warning: Scaler for key '{
+                          scaler_key}' not found. Skipping inverse transformation.")
+                    # use raw output as fallback(clamped)
+                    results[key] = max(0, outputs[key].cpu().numpy()[0][0])
 
             # Display the predictions
             st.subheader("Nutritional Estimation Results")
-            calories = nutritional_output["protein"] * 4 + \
-                nutritional_output["carbs"] * 4 + nutritional_output["fat"] * 9
-            nutritional_output["calories"] = calories
-            for key, value in nutritional_output.items():
-                value = value * st.session_state["scaling_factor"]
+            calories = results["protein"] * 4 + \
+                results["carbs"] * 4 + results["fat"] * 9
+            results["calories"] = calories
+            for key, value in results.items():
+                value = value * st.session_state["scaling_factor"]/3
                 if key == "calories":
-                    st.write(f"{key.capitalize()}: {
-                             value.squeeze().cpu().item():.2f} calories")
+                    st.write(f"{key.capitalize()}: {value:.2f} calories")
                 elif key != "mass":
-                    st.write(f"{key.capitalize()}: {
-                             value.squeeze().cpu().item():.2f}g")
+                    st.write(f"{key.capitalize()}: {value:.2f}g")
 
 else:
     st.info("Please upload an image to begin.")
