@@ -1,7 +1,6 @@
 # Nutritional Estimate App
 
-Welcome to the **Nutritional Estimate App**!  
-This project allows users to upload meal images and get nutritional estimates using a Streamlit-based UI and an AI-powered backend.
+This project allows users to upload meal images and get nutritional estimates using a Streamlit-based UI and our Computer Vision system.
 
 ---
 
@@ -58,50 +57,9 @@ streamlit run app.py
 ```
 
 - This will open the app in your default web browser.
-- If it doesn’t open automatically, navigate to the URL shown in the terminal (usually `http://localhost:8501`).
+- If it doesn’t open automatically, navigate to the URL shown in the terminal (e.g. `http://localhost:8501`).
 
 ---
-
-### 5. Workflow for Development
-1. Make sure your virtual environment is activated before making changes:
-   ```bash
-   source .venv/bin/activate
-   ```
-2. After adding or updating any dependencies, update the `requirements.txt` file:
-   ```bash
-   pip freeze > requirements.txt
-   ```
-3. Commit your changes to Git:
-   ```bash
-   git add requirements.txt
-   git commit -m "Update requirements.txt with new dependencies"
-   git push origin main
-   ```
-
----
-
-## Troubleshooting
-- **Virtual Environment Issues**: If you encounter problems with the virtual environment, delete the `.venv` folder and recreate it.
-- **Streamlit Errors**: Ensure that Streamlit is correctly installed and the Python version matches the project requirements (e.g., Python 3.8+).
-
----
-
-## Contributing
-1. Fork the repository.
-2. Create a new branch for your feature:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add your feature"
-   ```
-4. Push to your branch:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-5. Open a Pull Request.
-
 ---
 
 ## About
