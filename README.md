@@ -15,6 +15,8 @@ This project allows users to upload meal images and get nutritional estimates us
 
 Follow these steps to set up the project on your local machine.
 
+[Do note that your setup must be GPU enabled (e.g. cuda)]
+
 ### 1. Clone the Repository
 First, clone the repository to your local machine:
 ```bash
@@ -39,6 +41,8 @@ Activate the virtual environment:
   ```bash
   source .venv/bin/activate
   ```
+
+Ensure your device is GPU enabled (e.g. cuda).
 
 ---
 
